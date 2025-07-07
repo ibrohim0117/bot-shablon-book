@@ -1,0 +1,9 @@
+import sqlite3 
+
+def insert_user(username, user_id, date):
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "INSERT OR IGNORE INTO users(username, user_id, date) VALUES(?, ?, ?)"
+    curr.execute(query, (username, user_id, date))
+    conn.commit()
+    conn.close()
