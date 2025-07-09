@@ -6,6 +6,7 @@ from aiogram.dispatcher import FSMContext
 from data.create import insert_category
 from states.admin import AddCategory
 from keyboards.default.admin_buttons import get_categores, admin_menyu
+from data.config import ADMINS
 
 
 @dp.message_handler(text="BACK🔙")
@@ -15,8 +16,9 @@ async def category_book(message: types.Message):
 
 @dp.message_handler(text="Kategory qo'shish")
 async def category_book(message: types.Message):
-    await message.answer("Kategory nomini kiriting")
-    await AddCategory.name.set()
+    if f"{message.from_id}" in ADMINS:
+        await message.answer("Kategory nomini kiriting")
+        await AddCategory.name.set()
 
 
 @dp.message_handler(state=AddCategory.name)
@@ -33,4 +35,5 @@ async def c_name(message: types.Message, state: FSMContext):
 
 @dp.message_handler(text="Mavjud kategoriyalar")
 async def category_list(message: types.Message):
-    await message.answer("Mavjud categoriyalar", reply_markup=get_categores())
+    if f"{message.from_id}" in ADMINS:
+        await message.answer("Mavjud categoriyalar", reply_markup=get_categores())
