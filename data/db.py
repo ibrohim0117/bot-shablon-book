@@ -13,5 +13,14 @@ CREATE TABLE IF NOT EXISTS users(
 
 """)
     
+    curr.execute("""
+    CREATE TABLE IF NOT EXISTS categores(
+        id integer primary key autoincrement,
+        name VARCHAR(50) UNIQUE,
+        date DATE
+                    )
+
+""")
+    
     conn.commit()
     conn.close()

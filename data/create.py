@@ -7,3 +7,12 @@ def insert_user(username, user_id, date):
     curr.execute(query, (username, user_id, date))
     conn.commit()
     conn.close()
+
+
+def insert_category(name, date):
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "INSERT INTO categores(name, date) VALUES(?, ?)"
+    curr.execute(query, (name, date))
+    conn.commit()
+    conn.close()
