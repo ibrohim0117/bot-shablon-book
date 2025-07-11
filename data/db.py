@@ -22,5 +22,22 @@ CREATE TABLE IF NOT EXISTS users(
 
 """)
     
+    curr.execute("""
+    CREATE TABLE IF NOT EXISTS products(
+        id integer primary key autoincrement,
+        name VARCHAR(50) UNIQUE,
+        price INT,
+        image VARCHAR(300),
+        category VARCHAR(25),
+        date DATE
+                    )
+
+""")
+    
+    
     conn.commit()
     conn.close()
+
+
+
+     

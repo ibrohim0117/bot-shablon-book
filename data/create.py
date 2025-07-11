@@ -16,3 +16,12 @@ def insert_category(name, date):
     curr.execute(query, (name, date))
     conn.commit()
     conn.close()
+
+
+def insert_book(name, price, image, date, category):
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "INSERT INTO products(name, price, image, date, category) VALUES(?, ?, ?, ?, ?)"
+    curr.execute(query, (name, price, image, date, category))
+    conn.commit()
+    conn.close()
