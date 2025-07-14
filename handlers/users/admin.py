@@ -5,7 +5,9 @@ from aiogram.dispatcher import FSMContext
 
 from data.create import insert_category, insert_book
 from states.admin import AddCategory, AddBook
-from keyboards.default.admin_buttons import get_categores, admin_menyu
+from keyboards.default.admin_buttons import get_categores, admin_menyu, get_books
+from data.selectt import show_detail_book
+from keyboards.inline.buttons import inline_plus
 from data.config import ADMINS
 
 
@@ -81,6 +83,28 @@ async def book_category_f(message: types.Message, state: FSMContext):
     insert_book(name, price, image_data, date, category)
     await message.answer("Kitob qushildi", reply_markup=admin_menyu)
     await state.finish()
+
+
+
+
+
+@dp.message_handler(text="Mavjud kitoblar")
+async def book_list(message: types.Message):
+    if f"{message.from_id}" in ADMINS:
+        await message.answer("Mavjud kitoblar", reply_markup=get_books())
+
+
+
+@dp.message_handler()
+async def book_detail(msg: types.Message):
+    if show_detail_book(msg.text):
+        data = show_detail_book(msg.text)
+        book_name = msg.text
+        book_price = data[1]
+        book_image = data[2]
+        await msg.answer_photo(book_image, f"Kitob nomi: {book_name}\nKitob narxi: {book_price}", reply_markup=inline_plus())
+    else:
+        await msg.answer("Bunday kitob bazadan topilmadi!")
 
 
 

@@ -1,5 +1,5 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from data.selectt import show_all_categores
+from data.selectt import show_all_categores, show_all_book
 
 admin_menyu = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 b1 = KeyboardButton('Mavjud kategoriyalar')
@@ -16,5 +16,12 @@ admin_menyu.add(b1, b2, b3, b4, b5, b6, b7, b8)
 def get_categores():
     keyboards = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     for i in show_all_categores():
+        keyboards.insert(KeyboardButton(i[0]))
+    return keyboards.add(KeyboardButton("BACK🔙"))
+
+
+def get_books():
+    keyboards = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    for i in show_all_book():
         keyboards.insert(KeyboardButton(i[0]))
     return keyboards.add(KeyboardButton("BACK🔙"))
