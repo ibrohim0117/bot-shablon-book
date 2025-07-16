@@ -2,18 +2,24 @@ from aiogram import types
 from datetime import datetime
 from loader import dp
 from aiogram.dispatcher import FSMContext
+from loader import bot
 
-from data.create import insert_category, insert_book
-from states.admin import AddCategory, AddBook
+from data.create import insert_category, insert_book, delete_book
+from states.admin import AddCategory, AddBook, DeleteBook
 from keyboards.default.admin_buttons import get_categores, admin_menyu, get_books
-from data.selectt import show_detail_book
-from keyboards.inline.buttons import inline_plus
+from data.selectt import show_detail_book, show_all_book_name
+from keyboards.inline.buttons import inline_plus, yes_or_no
+from keyboards.default.user_buttons import user_menyu
 from data.config import ADMINS
 
 
-@dp.message_handler(text="BACK🔙")
+
+@dp.message_handler(text="BACK🔙", state='*')
 async def category_book(message: types.Message):
-    await message.answer("Bosh menyu", reply_markup=admin_menyu)
+    if f"{message.from_id}" in ADMINS:
+        await message.answer("Bosh menyu", reply_markup=admin_menyu)
+    else:
+        await message.answer("Bosh menyu", reply_markup=user_menyu)
 
 
 @dp.message_handler(text="Kategory qo'shish")
@@ -95,7 +101,7 @@ async def book_list(message: types.Message):
 
 
 
-@dp.message_handler()
+@dp.message_handler(lambda msg: (msg.text, ) in show_all_book_name())
 async def book_detail(msg: types.Message):
     if show_detail_book(msg.text):
         data = show_detail_book(msg.text)
@@ -107,6 +113,35 @@ async def book_detail(msg: types.Message):
         await msg.answer("Bunday kitob bazadan topilmadi!")
 
 
+# Kitobni o'chirish
+@dp.message_handler(text="Kitobni o'chirish")
+async def d_book(message: types.Message):
+    if f"{message.from_id}" in ADMINS:
+        await message.answer("Kitob nomini tanlang", reply_markup=get_books())
+        await DeleteBook.name.set()
+
+
+
+@dp.message_handler(state=DeleteBook.name)
+async def d_b_n(msg: types.Message, state: FSMContext):
+    await state.update_data(name=msg.text)
+    await msg.answer("Aniq o'chirasizmi?", reply_markup=yes_or_no)
+    await DeleteBook.ha_yuq.set()
+
+
+@dp.callback_query_handler(state=DeleteBook.ha_yuq)
+async def h_y(call: types.CallbackQuery, state: FSMContext):
+    if call.data == 'yes':
+        data = await state.get_data()
+        name = data.get('name')
+        delete_book(name)
+        await bot.send_message(chat_id=call.from_user.id, text="Kitob o'chirildi!", reply_markup=get_books
+    )
+        await state.finish()
+        
+    else:
+        await call.answer("Amalyot bekor qilindi sog'bulas!")
+        await state.finish()
 
 
 

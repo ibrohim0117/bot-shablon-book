@@ -10,7 +10,7 @@ from keyboards.default.admin_buttons import admin_menyu
 from loader import dp
 
 
-@dp.message_handler(CommandStart())
+@dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message):
     # print(config.ADMINS, message.from_id)
     if f"{message.from_id}" in config.ADMINS:

@@ -10,3 +10,8 @@ class AddBook(StatesGroup):
     price = State()
     image = State()
     category = State()
+
+
+class DeleteBook(StatesGroup):
+    name = State()
+    ha_yuq= State()

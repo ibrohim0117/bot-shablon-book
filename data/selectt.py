@@ -16,6 +16,14 @@ def show_all_book():
     return data
 
 
+def show_all_book_name():
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "SELECT name FROM products"
+    data = curr.execute(query, ).fetchall()
+    return data
+
+
 def show_detail_book(name):
     conn = sqlite3.connect('data/baza.db')
     curr = conn.cursor()
@@ -25,6 +33,8 @@ def show_detail_book(name):
 
 
 
+# if ("O'tgan kunlar",) in (show_all_book_name()):
+#     print(True)
 # print(show_detail_book('Tib qonunlari'))
 
 # for i in (show_all_book()):

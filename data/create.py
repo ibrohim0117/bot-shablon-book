@@ -25,3 +25,13 @@ def insert_book(name, price, image, date, category):
     curr.execute(query, (name, price, image, date, category))
     conn.commit()
     conn.close()
+
+
+
+def delete_book(name):
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "DELETE FROM products WHERE name=?"
+    curr.execute(query, (name, ))
+    conn.commit()
+    conn.close()
