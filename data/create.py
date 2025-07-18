@@ -27,6 +27,14 @@ def insert_book(name, price, image, date, category):
     conn.close()
 
 
+def insert_order(name, count, user_id, date):
+    conn = sqlite3.connect('data/baza.db')
+    curr = conn.cursor()
+    query = "INSERT INTO orders(name, count, user_id, date) VALUES(?, ?, ?, ?)"
+    curr.execute(query, (name, count, user_id, date))
+    conn.commit()
+    conn.close()
+
 
 def delete_book(name):
     conn = sqlite3.connect('data/baza.db')

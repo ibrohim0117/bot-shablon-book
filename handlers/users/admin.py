@@ -4,7 +4,7 @@ from loader import dp
 from aiogram.dispatcher import FSMContext
 from loader import bot
 
-from data.create import insert_category, insert_book, delete_book
+from data.create import insert_category, insert_book, delete_book, insert_order
 from states.admin import AddCategory, AddBook, DeleteBook
 from keyboards.default.admin_buttons import get_categores, admin_menyu, get_books
 from data.selectt import show_detail_book, show_all_book_name
@@ -102,15 +102,40 @@ async def book_list(message: types.Message):
 
 
 @dp.message_handler(lambda msg: (msg.text, ) in show_all_book_name())
-async def book_detail(msg: types.Message):
-    if show_detail_book(msg.text):
-        data = show_detail_book(msg.text)
-        book_name = msg.text
-        book_price = data[1]
-        book_image = data[2]
-        await msg.answer_photo(book_image, f"Kitob nomi: {book_name}\nKitob narxi: {book_price}", reply_markup=inline_plus())
-    else:
-        await msg.answer("Bunday kitob bazadan topilmadi!")
+async def book_detail(msg: types.Message, state: FSMContext):
+    data = show_detail_book(msg.text)
+    book_name = msg.text
+    book_price = data[1]
+    book_image = data[2]
+    await state.update_data(name=book_name, count=1)
+    await msg.answer_photo(book_image, f"Kitob nomi: {book_name}\nKitob narxi: {book_price}", reply_markup=inline_plus())
+
+
+
+@dp.callback_query_handler(lambda c: c.data in ['plus', 'menus'])
+async def p_o_m(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    count = data.get('count')
+    if call.data == 'plus':
+        count += 1
+
+    elif call.data == 'menus' and count > 1:
+        count -= 1
+    
+    await state.update_data(count=count)
+    await call.answer(f"Siz {count} ta mahsulot tanladingiz!")
+    await call.message.edit_reply_markup(reply_markup=inline_plus(count))
+
+
+@dp.callback_query_handler(lambda c: c.data == 'order')
+async def zakaz(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    name = data.get('name')
+    count = data.get('count')
+    insert_order(name, count, call.from_user.id, datetime.now())
+    await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+    await call.answer("Buyurtma savatga saqlandi!")
+    
 
 
 # Kitobni o'chirish

@@ -34,6 +34,18 @@ CREATE TABLE IF NOT EXISTS users(
 
 """)
     
+
+    curr.execute("""
+    CREATE TABLE IF NOT EXISTS orders(
+        id integer primary key autoincrement,
+        name VARCHAR(50),
+        count INT,
+        user_id INT,
+        date DATE
+                    )
+
+""")
+    
     
     conn.commit()
     conn.close()
