@@ -128,4 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/*
+.env*.pyc
+*.pyo
 .env
+.venv/
+*.sqlite3
+*.db
+*.session
+.DS_Store
+media/
